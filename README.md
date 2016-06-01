@@ -29,19 +29,21 @@ command line tools to assume a role.
 
 1. [Install aws cli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 2. Configure AWS CLI with required credentials, either as Environment
-   Variables or through 'aws configure'
+   Variables or through 'aws configure --profile <profile_name>'
 3. `wget -N https://raw.githubusercontent.com/civisanalytics/iam-role-injector/master/assume_role.sh -O ~/assume_role.sh`
 
 ## Command Line Usage
 
 ```
-source ~/assume_role.sh {sourceAccountNumber} {username} {destinationAccountNumber} {rolename}
+source ~/assume_role.sh {sourceAccountNumber} {username} {destinationAccountNumber} {rolename} {profileName}
 ```
 
  - `sourceAccountNumber`: AWS Account Number of AWS Account 1
  - `username`: AWS Account 1 username
  - `destinationAccountNumber`: AWS Account Number of AWS Account 2
  - `rolename`: the name of the role to assume in AWS Account 2 that has the Trust Relationship to AWS Account 1
+ - `profileName`: the name of the profile that is used for the aws command.  This defaults to 'default' which is the profile created 
+                  when running 'aws configure'
 
 Calling the script with 'source' is required for the
 environment variables to persist past the runtime of the script.

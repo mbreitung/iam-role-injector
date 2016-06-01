@@ -6,8 +6,17 @@ sourceAccountNumber=$1
 username=$2
 destinationAccountNumber=$3
 rolename=$4
+aws_profile=${5:-default}
 
 if [ -n "$destinationAccountNumber" ] && [ -n "$sourceAccountNumber" ] && [ -n "$rolename" ] && [ -n "$username" ]; then
+  if [ -z "$AWS_ACCESS_KEY_ID" ] && [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+    AWSprofile="--profile ${aws_profile}"
+  elif [ "default" != "${aws_profile}" ]; then
+    AWSprofile="--profile ${aws_profile}"
+  else
+    AWSprofile=
+  fi
+
   echo "Enter MFA token code:"
   read tokenCode
   unset AWS_SECURITY_TOKEN
@@ -39,6 +48,7 @@ if [ -n "$destinationAccountNumber" ] && [ -n "$sourceAccountNumber" ] && [ -n "
 
   commandResult=" "
   commandResult+=$(aws sts assume-role --output json \
+                  ${AWSprofile} \
                   --role-arn $roleArn \
                   --role-session-name iam-role-injector \
                   --serial-number $serialArn \
@@ -61,5 +71,6 @@ if [ -n "$destinationAccountNumber" ] && [ -n "$sourceAccountNumber" ] && [ -n "
   fi
 
 else
-  echo "Usage: source assume_role.sh {sourceAccountNumber} {username} {destinationAccountNumber} {rolename}"
+  echo "Usage: source assume_role.sh {sourceAccountNumber} {username} {destinationAccountNumber} {rolename} {profileName}"
 fi
+
